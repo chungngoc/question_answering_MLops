@@ -1,9 +1,26 @@
-from fastapi import FastAPI, Depends
+import time
+from fastapi import FastAPI, Depends, Request
 from app.schemas import QARequest, QAResponse
 from app.model import QAModel
 from app.dependencies import get_qa_model
+from app.logging import get_logger
+
+logger = get_logger(__name__)
 
 app = FastAPI(title="Question Answering API")
+
+@app.middleware("http")
+async def log_request_time(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    duration = time.time() - start_time
+
+    logger.info(
+        f"{request.method} {request.url.path} "
+        f"status={response.status_code} "
+        f"duration={duration:.3f}s"
+    )
+    return response
 
 @app.post("/predict", response_model=QAResponse)
 async def predict(

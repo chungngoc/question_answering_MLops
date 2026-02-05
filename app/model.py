@@ -1,5 +1,8 @@
 import threading
 from transformers import pipeline
+from app.logging import get_logger
+
+logger = get_logger(__name__)
 
 class QAModel:
     '''
@@ -13,8 +16,10 @@ class QAModel:
         if cls._instance is None:
             with cls._lock:
                 if cls._instance is None:
+                    logger.info("Loading QA model...")
                     cls._instance = super(QAModel, cls).__new__(cls)
                     cls._instance._load_model()
+                    logger.info("QA model loaded successfully")
         return cls._instance
 
     def _load_model(self):
