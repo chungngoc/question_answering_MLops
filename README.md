@@ -1,5 +1,7 @@
 # Question Answering API (MLOps)
 
+[![QA MLOps CI](https://github.com/chungngoc/question_answering_mlops/actions/workflows/ci.yml/badge.svg)](https://github.com/chungngoc/question_answering_mlops/actions/workflows/ci.yml)
+
 End-to-end Question Answering system built with:
 - Hugging Face Transformers
 - FastAPI
