@@ -6,7 +6,7 @@ app = FastAPI(title="Question Answering API")
 model = QAModel()
 
 @app.post("/predict", response_model=QAResponse)
-def predict(request: QARequest):
+async def predict(request: QARequest):
     """
     Predict the answer to a question based on the provided context.
 
@@ -21,4 +21,7 @@ def predict(request: QARequest):
         "answer": answer["answer"],
         "score": answer["score"]
     }
-    
+
+@app.get("/")
+async def root():
+    return {"Message": "Hello, change the url to /docs to see the API documentation."}
