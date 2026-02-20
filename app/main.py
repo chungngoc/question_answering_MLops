@@ -47,3 +47,12 @@ async def predict(
 @app.get("/")
 async def root():
     return {"Message": "Hello, change the url to /docs to see the API documentation."}
+
+@app.get("/version")
+async def version():
+    return {
+        "app": settings.app_name,
+        "version": settings.app_version,
+        "env": settings.env,
+        "model": settings.model_name,
+    }

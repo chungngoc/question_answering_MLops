@@ -25,3 +25,13 @@ def test_predict_endpoint():
     assert "score" in data
     assert isinstance(data["answer"], str)
     assert data["score"] >= 0 and data["score"] <= 1
+
+def test_version_endpoint():
+    response = client.get("/version")
+    assert response.status_code == 200
+
+    data = response.json()
+    assert "app" in data
+    assert "version" in data
+    assert "env" in data
+    assert "model" in data
