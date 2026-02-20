@@ -1,0 +1,6 @@
+MLOps combines machine learning and DevOps practices to automate
+the deployment, monitoring, and maintenance of machine learning models
+in production systems.
+
+Key components of MLOps include continuous integration, continuous
+deployment, monitoring, data versioning, and model governance.
