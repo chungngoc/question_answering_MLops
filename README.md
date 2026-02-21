@@ -11,6 +11,17 @@ This project is an end-to-end **Question Answering (QA) API** built with
 The service exposes a REST API that answers questions given a textual context,
 and is fully containerized, tested, and CI/CD-enabled.
 
+## Retrieval-Augmented Generation (RAG)
+
+This project implements a **Retrieval-Augmented Generation (RAG)** pipeline
+to answer questions using an internal knowledge base.
+
+Instead of requiring the user to provide a context manually, the system:
+1. Retrieves the most relevant documents using semantic search
+2. Builds a context dynamically from retrieved documents
+3. Applies an extractive Question Answering model to produce the final answer
+
+
 ## Key Features
 
 - REST API for extractive Question Answering
@@ -29,30 +40,49 @@ and is fully containerized, tested, and CI/CD-enabled.
 Client
   |
   v
-FastAPI Application
+FastAPI API
+  |
+  +--> Embedding Model (Sentence Transformers)
+  |        |
+  |        v
+  |     FAISS Vector Store
+  |        |
+  |        v
+  |  Top-K Relevant Documents
   |
   v
-Hugging Face QA Model (lazy-loaded, singleton)
+Question Answering Model (Hugging Face)
+  |
+  v
+Answer + Source Documents
 ```
 
-The model is loaded lazily on the first request and shared across all requests
-to minimize startup time and memory usage.
+The embedding model and FAISS index are loaded lazily and shared across requests. This ensures efficient memory usage and fast inference while keeping application startup time low.
 
 ## API Endpoints
 
 | Method | Endpoint   | Description |
 |------|-----------|------------|
-| POST | `/predict` | Answer a question given a context |
+| POST | `/predict` | Answer a question using Retrieval-Augmented Generation. |
 | GET  | `/version` | Application metadata |
 | GET  | `/docs`    | Swagger UI |
 
-Example request:
+**Example** :
 
+*Request*:
+```json
 {
-  "question": "What is MLOps?",
-
-  "context": "MLOps combines machine learning and DevOps practices."
+  "question": "What is MLOps?"
 }
+```
+*Response*
+```json
+{
+  "answer": "MLOps combines machine learning and DevOps practices...",
+  "score": 0.87,
+  "sources": ["mlops.txt"]
+}
+```
 
 ## Run locally
 ```bash
@@ -63,14 +93,17 @@ make run
 ## Tech Stack
 - Python
 - FastAPI
+- Uvicorn
 - Hugging Face Transformers
+- Sentence Transformers
 - PyTorch
+- FAISS (vector similarity search)
 - Docker
 - GitHub Actions
 - GitHub Container Registry (GHCR)
 
 ## Future Improvements
-- Retrieval-Augmented Generation (RAG)
+- Extend RAG pipeline with generative models (LLMs)
 - Metrics endpoint (Prometheus)
 - Cloud deployment with autoscaling
 - Model versioning and experiment tracking
